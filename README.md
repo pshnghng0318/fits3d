@@ -17,6 +17,16 @@ This Python script visualizes 3D astronomical data stored in a FITS file using [
 - `pyvista`
 - `numpy`
 
+e.g., 
+# 1. 建立虛擬環境
+python3 -m venv astroenv
+
+# 2. 啟用虛擬環境
+source astroenv/bin/activate
+
+# 3. 安裝所需的 Python 套件（包括 astropy）
+pip install astropy numpy matplotlib
+
 Install dependencies:
 
 ```bash
