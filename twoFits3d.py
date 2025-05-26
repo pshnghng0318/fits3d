@@ -1,5 +1,12 @@
 import numpy as np
 import pyvista as pv
+import tkinter as tk
+
+root = tk.Tk()
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+root.destroy()
+
 from astropy.io import fits
 
 def load_fits_volume(filepath):
@@ -42,6 +49,8 @@ threshold2 = 0.005
 
 opacity1 = [0.0 if x < threshold1 else 1 for x in np.linspace(np.nanmin(vol1), np.nanmax(vol1)/2., 256)]
 opacity2 = [0.0 if x < threshold2 else 1 for x in np.linspace(np.nanmin(vol2), np.nanmax(vol2)/2., 256)]
+
+plotter = pv.Plotter(window_size=(screen_width * 2, screen_height * 2))
 
 plotter.add_volume(grid1, scalars="intensity", cmap="Reds", opacity=opacity1, opacity_unit_distance=0.05, shade=False)
 plotter.add_volume(grid2, scalars="intensity", cmap="Blues", opacity=opacity2, opacity_unit_distance=0.05, shade=False)

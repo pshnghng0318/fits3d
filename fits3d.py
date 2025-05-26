@@ -12,24 +12,32 @@ def visualize_fits_3d_volume(filepath, threshold=0.0):
     volume = np.transpose(data, (2, 1, 0))  # (FREQ, DEC, RA)
     volume[volume < 0] = 0.0
 
-    #print("資料範圍：", np.nanmin(volume), "到", np.nanmax(volume))
-    #print("NaN 數量：", np.isnan(volume).sum())
-    #print("資料 shape：", volume.shape)
+    vmin, vmax = np.nanmin(volume), np.nanmax(volume)
+    print(vmin,vmax)
 
+    # 建立 binary opacity curve：< threshold → 0, >= threshold → 1
+    opacity = [0.0 if val < threshold else 1.0 for val in np.linspace(vmin, vmax, 256)]
+
+    # 建立 PyVista ImageData
     grid = pv.ImageData()
     grid.dimensions = np.array(volume.shape) + 1
     grid.spacing = (1, 1, 1)
     grid.origin = (0, 0, 0)
     grid.cell_data["intensity"] = volume.flatten(order="F")
-
+    print(grid)
+    # 繪製
     plotter = pv.Plotter()
-    plotter.add_volume(grid, scalars="intensity",
-                       cmap="rainbow", 
-                       opacity="sigmoid",
-                       opacity_unit_distance=2.0,
-                       shade=True)
+    plotter.add_volume(
+        grid,
+        scalars="intensity",
+        cmap="rainbow",
+        opacity=opacity,
+        opacity_unit_distance=0.1,
+        shade=True
+    )
     plotter.add_axes()
     plotter.show()
 
-visualize_fits_3d_volume("sio87.fits", threshold=1e-3)
+# 範例：將低於 1e-3 的值完全透明
+visualize_fits_3d_volume("sio87.fits", threshold=1e-2)
 
